@@ -12,12 +12,10 @@ class MoviesController < ApplicationController
 
   def index
     
-    if (params[:sort]=="title")
-      # Movie.comparing_field = params[:id]
-      @movies = Movie.find(:all, :order => "title")
-    elsif (params[:sort] == "release_date")
-      @movies = Movie.find(:all, :order => "release_date")
-    elsif (params[:sort] == nil)
+    if (params.has_key?(:sort))
+      @sort = params[:sort]
+      @movies = Movie.order(@sort)
+    else
       @movies = Movie.all
     end
   end
@@ -50,5 +48,13 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
-
+  helper_method :get_dynamic_class
+  def get_dynamic_class(class_name)
+    if (@sort == class_name)
+      return 'hilite'
+    else
+      return nil
+    end
+  end
+  
 end
